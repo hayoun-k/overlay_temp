@@ -86,4 +86,4 @@ if (targetArray.length > 0) {
 };
 
 // initializeOverlays();
-document.addEventListener("load",initializeOverlays());
+document.addEventListener("DOMContentLoaded",initializeOverlays());
