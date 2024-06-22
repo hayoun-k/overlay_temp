@@ -1,85 +1,76 @@
-const script = document.querySelector(
-  'script[src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.js"]'
-);
-
-script.addEventListener("load", log());
-script.addEventListener("load", initializeOverlays());
-
-function log() {
-  // Code to execute after external.js is loaded
-  console.log("external.js loaded");
-}
 function initializeOverlays() {
-  let targetClass = document.getElementsByClassName("fancybox_listing_link");
+  let targetClass = $(".fancybox_listing_link");
   console.log(targetClass);
-  let targetArray = Array.from(targetClass);
+  let targetArray = targetClass.toArray();
   console.log(targetArray);
 
-  if (targetArray.length >= 0) {
+  if (targetArray.length > 0) {
     const createOverlay = () => {
       // generating HTML elements for the text overlay
-      let newDiv = document.createElement("div");
-      let specialDeal = document.createElement("span");
-      specialDeal.innerHTML = "Special Deal";
-      let description = document.createElement("span");
-      description.innerHTML =
-        "One onwer car, Financing Available Low mileage, Call now!";
-      newDiv.id = "overlay_wrapper";
-      newDiv.appendChild(specialDeal);
-      newDiv.appendChild(description);
+      let newDiv = $("<div>", { id: "overlay_wrapper" });
+      let specialDeal = $("<span>").html("Special Deal");
+      let description = $("<span>").html("One owner car, Financing Available Low mileage, Call now!");
+
+      newDiv.append(specialDeal).append(description);
 
       // styling the text and background
-      newDiv.style.backgroundColor = "red"; //background color for box
-      newDiv.style.width = "200px"; //width of entire box
-      newDiv.style.height = "200px"; //height of entire box
-      newDiv.style.display = "flex";
-      newDiv.style.flexDirection = "column";
-      newDiv.style.justifyContent = "center";
-      newDiv.style.alignItems = "center";
-      // newDiv.style.gap = '0';
-      newDiv.style.borderRadius = "100%"; //for the circular shape
-      newDiv.style.position = "absolute";
-      newDiv.style.top = "0";
-      newDiv.style.right = "0";
+      newDiv.css({
+        backgroundColor: "red", // background color for box
+        width: "200px", // width of entire box
+        height: "200px", // height of entire box
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        alignItems: "center",
+        borderRadius: "100%", // for the circular shape
+        position: "absolute",
+        top: "0",
+        right: "0"
+      });
 
-      specialDeal.style.display = "block";
-      specialDeal.style.color = "yellow"; //color for 'special deal'
-      specialDeal.style.textAlign = "center";
-      specialDeal.style.fontSize = "24px";
-      description.style.display = "block";
-      description.style.color = "white"; //color for description
-      description.style.textAlign = "center";
+      specialDeal.css({
+        display: "block",
+        color: "yellow", // color for 'special deal'
+        textAlign: "center",
+        fontSize: "24px"
+      });
+
+      description.css({
+        display: "block",
+        color: "white", // color for description
+        textAlign: "center"
+      });
 
       console.log(newDiv);
       return newDiv;
     };
 
     const handleZoomedElements = () => {
-      const targetZoomed = document.getElementsByClassName("fancybox-inner");
+      const targetZoomed = $(".fancybox-inner");
       console.log(targetZoomed);
-      let zoomedArray = Array.from(targetZoomed);
+      let zoomedArray = targetZoomed.toArray();
       console.log(zoomedArray);
       zoomedArray.forEach((imageLarge) => {
-        if (!imageLarge.querySelector("#overlay_wrapper")) {
-          imageLarge.style.position = "relative";
+        if (!$(imageLarge).find("#overlay_wrapper").length) {
+          $(imageLarge).css("position", "relative");
           let overlay = createOverlay();
-          imageLarge.appendChild(overlay);
+          $(imageLarge).append(overlay);
         }
       });
     };
 
     targetArray.forEach((imageList) => {
-      imageList.style.position = "relative";
+      $(imageList).css("position", "relative");
       let overlay = createOverlay();
-      imageList.appendChild(overlay);
+      $(imageList).append(overlay);
 
-      imageList.addEventListener("click", () => {
+      $(imageList).on("click", () => {
         // MutationObserver
         const observer = new MutationObserver((mutations) => {
           mutations.forEach((mutation) => {
             if (mutation.addedNodes.length > 0) {
               mutation.addedNodes.forEach((node) => {
-                if (node.matches && node.matches(".fancybox-image")) {
+                if ($(node).is(".fancybox-image")) {
                   handleZoomedElements();
                 }
               });
@@ -94,4 +85,7 @@ function initializeOverlays() {
     });
   }
 }
+
+// initializeOverlays();
+$(window).on("load", initializeOverlays);
 
